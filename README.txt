@@ -8,8 +8,6 @@ make up your KeySaver application.
 
 
 Main.cpp
-
-<<<<<<< HEAD
 	-- This is the main application source file.
 =======
 KeySaver.vcxproj.filters
@@ -18,9 +16,9 @@ KeySaver.vcxproj.filters
     and the filters. This association is used in the IDE to show grouping of files with
     similar extensions under a specific node (for e.g. ".cpp" files are associated with the
     "Source Files" filter).
+    
 main.cpp
     This is the main application source file.
->>>>>>> 42d425137a7fde38466128b0bac7d9b7f6c87345
 
 /////////////////////////////////////////////////////////////////////////////
 Other standard files:
